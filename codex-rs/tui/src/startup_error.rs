@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 #[derive(Debug, thiserror::Error)]
 #[error(
-    "failed to initialize sqlite local db at {}: {detail}",
+    "无法在 {} 初始化 SQLite 本地数据库：{detail}",
     database_path.display()
 )]
 pub struct LocalStateDbStartupError {
