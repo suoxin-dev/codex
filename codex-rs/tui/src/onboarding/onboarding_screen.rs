@@ -598,7 +598,7 @@ async fn persist_selected_trust(
         Some(request_handle) => write_trusted_project(request_handle, &trust_target)
             .await
             .map(|_| ()),
-        None => Err(color_eyre::eyre::eyre!("app server unavailable")),
+        None => Err(color_eyre::eyre::eyre!("应用服务器不可用")),
     };
 
     match result {
@@ -612,7 +612,7 @@ async fn persist_selected_trust(
             if let Step::TrustDirectory(widget) = &mut onboarding_screen.steps[trust_step_index] {
                 widget.selection = None;
                 widget.error = Some(format!(
-                    "Failed to set trust for {}: {error}",
+                    "无法为 {} 设置信任：{error}",
                     trust_target.display()
                 ));
             }
@@ -716,7 +716,7 @@ mod tests {
             widget
                 .error
                 .as_deref()
-                .is_some_and(|error| error.contains("app server unavailable"))
+                .is_some_and(|error| error.contains("应用服务器不可用"))
         );
     }
 }
