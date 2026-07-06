@@ -28,8 +28,8 @@ const ALT_PREFIX: &str = "⌥ + ";
 const ALT_PREFIX: &str = "⌥ + ";
 #[cfg(all(not(test), not(target_os = "macos")))]
 const ALT_PREFIX: &str = "alt + ";
-const CTRL_PREFIX: &str = "ctrl + ";
-const SHIFT_PREFIX: &str = "shift + ";
+const CTRL_PREFIX: &str = "Ctrl + ";
+const SHIFT_PREFIX: &str = "Shift + ";
 
 /// One concrete key event that can trigger a TUI action.
 ///
@@ -69,14 +69,14 @@ impl KeyBinding {
     pub(crate) fn display_label(&self) -> String {
         let modifiers = modifiers_to_string(self.modifiers);
         let key = match self.key {
-            KeyCode::Enter => "enter".to_string(),
-            KeyCode::Char(' ') => "space".to_string(),
+            KeyCode::Enter => "回车".to_string(),
+            KeyCode::Char(' ') => "空格".to_string(),
             KeyCode::Up => "↑".to_string(),
             KeyCode::Down => "↓".to_string(),
             KeyCode::Left => "←".to_string(),
             KeyCode::Right => "→".to_string(),
-            KeyCode::PageUp => "pgup".to_string(),
-            KeyCode::PageDown => "pgdn".to_string(),
+            KeyCode::PageUp => "上翻".to_string(),
+            KeyCode::PageDown => "下翻".to_string(),
             _ => self.key.to_string().to_ascii_lowercase(),
         };
         format!("{modifiers}{key}")
