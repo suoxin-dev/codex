@@ -5,7 +5,7 @@
 //! `ChatComposer` (which selects a `FooterMode`) and by higher-level state machines like
 //! `ChatWidget` (which decides when quit/interrupt is allowed).
 //!
-//! Some footer content is time-based rather than event-based, such as the "press again to quit"
+//! Some footer content is time-based rather than event-based, such as the "再按一次退出"
 //! hint. The owning widgets schedule redraws so time-based hints can expire even if the UI is
 //! otherwise idle.
 //!
@@ -105,7 +105,7 @@ pub(crate) enum GoalStatusIndicator {
     Complete { usage: Option<String> },
 }
 
-const MODE_CYCLE_HINT: &str = "shift+tab to cycle";
+const MODE_CYCLE_HINT: &str = "Shift+Tab 切换";
 const FOOTER_CONTEXT_GAP_COLS: u16 = 1;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -146,11 +146,11 @@ impl CollaborationModeIndicator {
             String::new()
         };
         match self {
-            CollaborationModeIndicator::Plan => format!("Plan mode{suffix}"),
+            CollaborationModeIndicator::Plan => format!("计划模式{suffix}"),
             CollaborationModeIndicator::PairProgramming => {
-                format!("Pair Programming mode{suffix}")
+                format!("结对编程模式{suffix}")
             }
-            CollaborationModeIndicator::Execute => format!("Execute mode{suffix}"),
+            CollaborationModeIndicator::Execute => format!("执行模式{suffix}"),
         }
     }
 
@@ -172,7 +172,7 @@ impl CollaborationModeIndicator {
 pub(crate) enum FooterMode {
     /// Single-line incremental history search prompt shown while Ctrl+R search is active.
     HistorySearch,
-    /// Transient "press again to quit" reminder (Ctrl+C/Ctrl+D).
+    /// Transient "再按一次退出" reminder (Ctrl+C/Ctrl+D).
     QuitShortcutReminder,
     /// Multi-line shortcut overlay shown after pressing `?`.
     ShortcutOverlay,
@@ -324,19 +324,19 @@ fn left_side_line(
         SummaryHintKind::Shortcuts => {
             if let Some(key) = key_hints.toggle_shortcuts {
                 line.push_span(key);
-                line.push_span(" for shortcuts".dim());
+                line.push_span(" 查看快捷键"。dim());
             }
         }
         SummaryHintKind::QueueMessage => {
             if let Some(key) = key_hints.queue {
                 line.push_span(key);
-                line.push_span(" to queue message".dim());
+                line.push_span(" 加入消息队列"。dim());
             }
         }
         SummaryHintKind::QueueShort => {
             if let Some(key) = key_hints.queue {
                 line.push_span(key);
-                line.push_span(" to queue".dim());
+                line.push_span(" 排队"。dim());
             }
         }
     };
@@ -544,26 +544,26 @@ pub(crate) fn goal_status_indicator_line(
     let label = match indicator {
         GoalStatusIndicator::Active { usage } => {
             if let Some(usage) = usage {
-                format!("Pursuing goal ({usage})")
+                format!("追求目标中 ({usage})")
             } else {
-                "Pursuing goal".to_string()
+                "追求目标中".to_string()
             }
         }
-        GoalStatusIndicator::Paused => "Goal paused (/goal resume)".to_string(),
-        GoalStatusIndicator::Blocked => "Goal blocked (/goal resume)".to_string(),
-        GoalStatusIndicator::UsageLimited => "Goal hit usage limits (/goal resume)".to_string(),
+        GoalStatusIndicator::Paused => "目标已暂停 (/goal resume)"。to_string(),
+        GoalStatusIndicator::Blocked => "目标受阻 (/goal resume)"。to_string(),
+        GoalStatusIndicator::UsageLimited => "目标触及用量限制 (/goal resume)"。to_string(),
         GoalStatusIndicator::BudgetLimited { usage } => {
             if let Some(usage) = usage {
-                format!("Goal unmet ({usage})")
+                format!("目标未达成 ({usage})")
             } else {
-                "Goal abandoned".to_string()
+                "目标已放弃".to_string()
             }
         }
         GoalStatusIndicator::Complete { usage } => {
             if let Some(usage) = usage {
-                format!("Goal achieved ({usage})")
+                format!("目标已达成 ({usage})")
             } else {
-                "Goal achieved".to_string()
+                "目标已达成"。to_string()
             }
         }
     };
@@ -579,7 +579,7 @@ pub(crate) fn status_line_right_indicator_line(
 ) -> Option<Line<'static>> {
     let primary_indicator = mode_indicator_line(collaboration_mode_indicator, show_cycle_hint)
         .or_else(|| goal_status_indicator_line(goal_status_indicator));
-    let ide_context_indicator = ide_context_active.then(|| Line::from(vec!["IDE context".cyan()]));
+    let ide_context_indicator = ide_context_active.then(|| Line::from(vec!["IDE 上下文".cyan()]));
     let mut line: Option<Line<'static>> = None;
 
     for indicator in [primary_indicator, ide_context_indicator]
@@ -601,7 +601,7 @@ pub(crate) fn status_line_right_indicator_line(
 
 pub(crate) fn side_conversation_context_line(label: &str) -> Line<'static> {
     if let Some(rest) = label.strip_prefix("Side ") {
-        Line::from(vec!["Side".magenta().bold(), format!(" {rest}").magenta()])
+        Line::from(vec!["侧边".magenta().bold(), format!(" {rest}").magenta()])
     } else {
         Line::from(label.to_string()).magenta()
     }
