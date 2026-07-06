@@ -35,12 +35,12 @@ use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
 const CHATGPT_LOGIN_DISABLED_MESSAGE: &str =
-    "ChatGPT login is disabled. Use API key login instead.";
+    "ChatGPT 登录已禁用。请改用 API 密钥登录。";
 const API_KEY_LOGIN_DISABLED_MESSAGE: &str =
-    "API key login is disabled. Use ChatGPT login instead.";
+    "API 密钥登录已禁用。请改用 ChatGPT 登录。";
 const ACCESS_TOKEN_LOGIN_DISABLED_MESSAGE: &str =
-    "Access token login is disabled. Use API key login instead.";
-const LOGIN_SUCCESS_MESSAGE: &str = "Successfully logged in";
+    "访问令牌登录已禁用。请改用 API 密钥登录。";
+const LOGIN_SUCCESS_MESSAGE: &str = "登录成功";
 
 /// Installs a small file-backed tracing layer for direct `codex login` flows.
 ///
@@ -53,14 +53,14 @@ fn init_login_file_logging(config: &Config) -> Option<WorkerGuard> {
     let log_dir = match codex_core::config::log_dir(config) {
         Ok(log_dir) => log_dir,
         Err(err) => {
-            eprintln!("Warning: failed to resolve login log directory: {err}");
+            eprintln!("警告：无法解析登录日志目录：{err}");
             return None;
         }
     };
 
     if let Err(err) = std::fs::create_dir_all(&log_dir) {
         eprintln!(
-            "Warning: failed to create login log directory {}: {err}",
+            "警告：无法创建登录日志目录 {}：{err}",
             log_dir.display()
         );
         return None;
@@ -80,7 +80,7 @@ fn init_login_file_logging(config: &Config) -> Option<WorkerGuard> {
         Ok(log_file) => log_file,
         Err(err) => {
             eprintln!(
-                "Warning: failed to open login log file {}: {err}",
+                "警告：无法打开登录日志文件 {}：{err}",
                 log_path.display()
             );
             return None;
@@ -101,7 +101,7 @@ fn init_login_file_logging(config: &Config) -> Option<WorkerGuard> {
     // without reproducing them through TUI or app-server.
     if let Err(err) = tracing_subscriber::registry().with(file_layer).try_init() {
         eprintln!(
-            "Warning: failed to initialize login log file {}: {err}",
+            "警告：无法初始化登录日志文件 {}：{err}",
             log_path.display()
         );
         return None;
@@ -112,7 +112,7 @@ fn init_login_file_logging(config: &Config) -> Option<WorkerGuard> {
 
 fn print_login_server_start(actual_port: u16, auth_url: &str) {
     eprintln!(
-        "Starting local login server on http://localhost:{actual_port}.\nIf your browser did not open, navigate to this URL to authenticate:\n\n{auth_url}\n\nOn a remote or headless machine? Use `codex login --device-auth` instead."
+        "正在 http://localhost:{actual_port} 启动本地登录服务器。\n如果浏览器未自动打开，请手动访问以下 URL 进行认证：\n\n{auth_url}\n\n在远程或无头机器上？请使用 `codex login --device-auth`。"
     );
 }
 
@@ -189,7 +189,7 @@ pub async fn run_login_with_chatgpt(cli_config_overrides: CliConfigOverrides) ->
             std::process::exit(0);
         }
         Err(e) => {
-            eprintln!("Error logging in: {e}");
+            eprintln!("登录出错：{e}");
             std::process::exit(1);
         }
     }
@@ -219,7 +219,7 @@ pub async fn run_login_with_api_key(
             std::process::exit(0);
         }
         Err(e) => {
-            eprintln!("Error logging in: {e}");
+            eprintln!("登录出错：{e}");
             std::process::exit(1);
         }
     }
@@ -255,7 +255,7 @@ pub async fn run_login_with_access_token(
             std::process::exit(0);
         }
         Err(e) => {
-            eprintln!("Error logging in with access token: {e}");
+            eprintln!("使用访问令牌登录出错：{e}");
             std::process::exit(1);
         }
     }
@@ -263,17 +263,17 @@ pub async fn run_login_with_access_token(
 
 pub fn read_api_key_from_stdin() -> String {
     read_stdin_secret(
-        "--with-api-key expects the API key on stdin. Try piping it, e.g. `printenv OPENAI_API_KEY | codex login --with-api-key`.",
-        "Reading API key from stdin...",
-        "No API key provided via stdin.",
+        "--with-api-key 需要通过 stdin 传入 API 密钥。请用管道传入，例如 `printenv OPENAI_API_KEY | codex login --with-api-key`。",
+        "正在从 stdin 读取 API 密钥...",
+        "未通过 stdin 提供 API 密钥。",
     )
 }
 
 pub fn read_access_token_from_stdin() -> String {
     read_stdin_secret(
-        "--with-access-token expects the access token on stdin. Try piping it, e.g. `printenv CODEX_ACCESS_TOKEN | codex login --with-access-token`.",
-        "Reading access token from stdin...",
-        "No access token provided via stdin.",
+        "--with-access-token 需要通过 stdin 传入访问令牌。请用管道传入，例如 `printenv CODEX_ACCESS_TOKEN | codex login --with-access-token`。",
+        "正在从 stdin 读取访问令牌...",
+        "未通过 stdin 提供访问令牌。",
     )
 }
 
@@ -289,7 +289,7 @@ fn read_stdin_secret(terminal_message: &str, reading_message: &str, empty_messag
 
     let mut buffer = String::new();
     if let Err(err) = stdin.read_to_string(&mut buffer) {
-        eprintln!("Failed to read stdin: {err}");
+        eprintln!("读取 stdin 失败：{err}");
         std::process::exit(1);
     }
 
@@ -341,7 +341,7 @@ pub async fn run_login_with_device_code(
             std::process::exit(0);
         }
         Err(e) => {
-            eprintln!("Error logging in with device code: {e}");
+            eprintln!("使用设备码登录出错：{e}");
             std::process::exit(1);
         }
     }
@@ -393,7 +393,7 @@ pub async fn run_login_with_device_code_fallback_to_browser(
         }
         Err(e) => {
             if e.kind() == std::io::ErrorKind::NotFound {
-                eprintln!("Device code login is not enabled; falling back to browser login.");
+                eprintln!("设备码登录未启用；回退到浏览器登录。");
                 match run_login_server(opts) {
                     Ok(server) => {
                         print_login_server_start(server.actual_port, &server.auth_url);
@@ -403,18 +403,18 @@ pub async fn run_login_with_device_code_fallback_to_browser(
                                 std::process::exit(0);
                             }
                             Err(e) => {
-                                eprintln!("Error logging in: {e}");
+                                eprintln!("登录出错：{e}");
                                 std::process::exit(1);
                             }
                         }
                     }
                     Err(e) => {
-                        eprintln!("Error logging in: {e}");
+                        eprintln!("登录出错：{e}");
                         std::process::exit(1);
                     }
                 }
             } else {
-                eprintln!("Error logging in with device code: {e}");
+                eprintln!("使用设备码登录出错：{e}");
                 std::process::exit(1);
             }
         }
@@ -437,37 +437,37 @@ pub async fn run_login_status(cli_config_overrides: CliConfigOverrides) -> ! {
         Ok(Some(auth)) => match auth.auth_mode() {
             AuthMode::ApiKey => match auth.get_token() {
                 Ok(api_key) => {
-                    eprintln!("Logged in using an API key - {}", safe_format_key(&api_key));
+                    eprintln!("已使用 API 密钥登录 - {}", safe_format_key(&api_key));
                     std::process::exit(0);
                 }
                 Err(e) => {
-                    eprintln!("Unexpected error retrieving API key: {e}");
+                    eprintln!("获取 API 密钥时发生意外错误：{e}");
                     std::process::exit(1);
                 }
             },
             AuthMode::Chatgpt | AuthMode::ChatgptAuthTokens => {
-                eprintln!("Logged in using ChatGPT");
+                eprintln!("已使用 ChatGPT 登录");
                 std::process::exit(0);
             }
             AuthMode::AgentIdentity => {
-                eprintln!("Logged in using access token");
+                eprintln!("已使用访问令牌登录");
                 std::process::exit(0);
             }
             AuthMode::PersonalAccessToken => {
-                eprintln!("Logged in using personal access token");
+                eprintln!("已使用个人访问令牌登录");
                 std::process::exit(0);
             }
             AuthMode::BedrockApiKey => {
-                eprintln!("Logged in using Amazon Bedrock API key");
+                eprintln!("已使用 Amazon Bedrock API 密钥登录");
                 std::process::exit(0);
             }
         },
         Ok(None) => {
-            eprintln!("Not logged in");
+            eprintln!("未登录");
             std::process::exit(1);
         }
         Err(e) => {
-            eprintln!("Error checking login status: {e}");
+            eprintln!("检查登录状态出错：{e}");
             std::process::exit(1);
         }
     }
@@ -486,11 +486,11 @@ pub async fn run_logout(cli_config_overrides: CliConfigOverrides) -> ! {
     .await
     {
         Ok(true) => {
-            eprintln!("Successfully logged out");
+            eprintln!("已成功退出登录");
             std::process::exit(0);
         }
         Ok(false) => {
-            eprintln!("Not logged in");
+            eprintln!("未登录");
             std::process::exit(0);
         }
         Err(e) => {
