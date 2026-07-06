@@ -9,11 +9,11 @@ const ANNOUNCEMENT_TIP_URL: &str =
 const IS_MACOS: bool = cfg!(target_os = "macos");
 const IS_WINDOWS: bool = cfg!(target_os = "windows");
 
-const APP_TOOLTIP: &str = "Try the **Codex App**. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true";
+const APP_TOOLTIP: &str = "试试 **Codex 应用**。运行 'codex app' 或访问 https://chatgpt.com/codex?app-landing-page=true";
 const FAST_TOOLTIP: &str =
-    "*New* Use **/fast** to enable our fastest inference with increased plan usage.";
-const OTHER_TOOLTIP: &str = "*New* Build faster with the **Codex App**. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true";
-const OTHER_TOOLTIP_NON_MAC: &str = "*New* Build faster with Codex.";
+    "*新* 使用 **/fast** 启用最快推理速度，将增加套餐用量消耗。";
+const OTHER_TOOLTIP: &str = "*新* 使用 **Codex 应用** 加速开发。运行 'codex app' 或访问 https://chatgpt.com/codex?app-landing-page=true";
+const OTHER_TOOLTIP_NON_MAC: &str = "*新* 使用 Codex 加速开发。";
 const FREE_GO_TOOLTIP: &str =
     "*New* For a limited time, Codex is included in your plan for free – let’s build together.";
 
